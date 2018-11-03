@@ -5,7 +5,7 @@ dist: xenial
 env:
   global:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
+   # via the "travis encrypt" command using the project repo's public key
    - secure: "NnW6A7v6MXyPcDl4dcY+laLGHaBWPZ51bG2vXd3K8RnVw40wxoly0iH1qnrJThn9IiXh9LXfcp05i0r3t8KL855qmcqeZC2Fc/20/D6IWSvE6n+9GsPYqmv/yK5WuSEzAM8oK1+jhqOGc4EsVGNqTfSaJcgrOPsWyblZjLIygvmIbMJ4fg8EYmFo9ogCTkEH1njo2qGkdjmFqqas+OFuxPsF5rtqzCwkENQ9Atg3QpI77lVX4HybGth9sCmqxLib+sFR9Oi3CoZqd/80tlXMBRdImcYLL6wdukn96YSDV5F8BV07GaIoNpQ1sRH5qVzp2f28X+wLKEN8+AYcAkpjLMy+rQcz3hIFG0AGezV7Ny2IB+q07f2zVQvw/KNTBdviQBVr1SsWJY6uyr1EspzHHtqBagmjvrZbStw0l7MgUYLchHZX6mb1hPd7gXaD9xa3Imx/dHAUO2n0lyiSdQZxX7rHs86243qHnP2WTWWdkigFG8h8t63UYK4qZPGDcI06XEtxeAGM9S0lh66HthnbBYCmaNfBR4fcmxI9GLFJJsJ9QRFwUZ/GRBV0SbJP+x3FiAhUavb3Tt79gqioOi5h+/7hIBMu1Ef7819+o733+vR+qq41OYf95ZLcyUQZI5hYomF12ROaTE6eqCzEpKiJtl+mPg13+BfAhzep8lD2/Fk="
 
 before_install:
