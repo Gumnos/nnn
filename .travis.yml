@@ -1,54 +1,29 @@
 language: c
-sudo: required
-services:
-  - docker
+
+dist: xenial
+
 env:
   global:
-    - REPO=nnn
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "NnW6A7v6MXyPcDl4dcY+laLGHaBWPZ51bG2vXd3K8RnVw40wxoly0iH1qnrJThn9IiXh9LXfcp05i0r3t8KL855qmcqeZC2Fc/20/D6IWSvE6n+9GsPYqmv/yK5WuSEzAM8oK1+jhqOGc4EsVGNqTfSaJcgrOPsWyblZjLIygvmIbMJ4fg8EYmFo9ogCTkEH1njo2qGkdjmFqqas+OFuxPsF5rtqzCwkENQ9Atg3QpI77lVX4HybGth9sCmqxLib+sFR9Oi3CoZqd/80tlXMBRdImcYLL6wdukn96YSDV5F8BV07GaIoNpQ1sRH5qVzp2f28X+wLKEN8+AYcAkpjLMy+rQcz3hIFG0AGezV7Ny2IB+q07f2zVQvw/KNTBdviQBVr1SsWJY6uyr1EspzHHtqBagmjvrZbStw0l7MgUYLchHZX6mb1hPd7gXaD9xa3Imx/dHAUO2n0lyiSdQZxX7rHs86243qHnP2WTWWdkigFG8h8t63UYK4qZPGDcI06XEtxeAGM9S0lh66HthnbBYCmaNfBR4fcmxI9GLFJJsJ9QRFwUZ/GRBV0SbJP+x3FiAhUavb3Tt79gqioOi5h+/7hIBMu1Ef7819+o733+vR+qq41OYf95ZLcyUQZI5hYomF12ROaTE6eqCzEpKiJtl+mPg13+BfAhzep8lD2/Fk="
 
-matrix:
-  include:
-    # Access more recent gcc and clang via a Trusty image
-    - os: linux
-      dist: trusty
-      compiler: gcc
-    - os: linux
-      dist: trusty
-      compiler: clang
-    - os: osx
-      compiler: gcc
-    - os: osx
-      compiler: clang
+before_install:
+  - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+
+addons:
+  apt:
+    packages:
+      - gcc-5
+
+  coverity_scan:
+    project:
+      name: "jarun/nnn"
+      description: "The missing terminal file manager for X."
+    notification_email: engineerarun@gmail.com
+    build_command_prepend: "cov-configure --comptype gcc --compiler gcc-5"
+    build_command: "make"
+    branch_pattern: coverity_scan
 
 script:
-  - export CFLAGS=-Werror;
-  - make clean; make;
-  - make clean;
-
-before_deploy:
-  - cd ..
-  - rm -rf $REPO/.git
-  - tar -czf $REPO-${TRAVIS_TAG}.tar.gz $REPO
-  - cd $REPO
-  - unset CFLAGS
-  - sudo apt-get update -qy
-  - sudo apt-get install -qy python3 python3-pip
-  - sudo python3 -m pip install --upgrade pip
-  - sudo python3 -m pip install --upgrade packagecore setuptools
-  - packagecore -o dist/ "${TRAVIS_TAG#v}"
-  - mv ../$REPO-${TRAVIS_TAG}.tar.gz dist/
-
-deploy:
-  provider: releases
-  api-key:
-    secure: bdw73zBeBEZtDZGEyFpAksnpwLHTBaC7VP1pONmnsXv4qmMcynASz0LfE4krEdAsRnvxQvqPZXviy/SZ3bmaLpVQmJIC1uRWIyOBE6K/7ddf+wfLy+1uO9EPd/zDF/D28Xy8QJLDGDZI08BY5Fist4XowyvtdW3GRwwDL7TwyZyigr0fkqLJwYcqCpojsHsjXjhkpGZqB5XRztaJ4kIEVz8du03ZU1l5kA9lI8Pdk9+mntOOt6emlaJl+Wr81QkwA8TvGPlZ1VP/+h9YCtlRy/4OuiU+bg5/Atxjh8M6rsq+WpZ3ZdYbR6x5vP78p9f6TsJa4ymGhhW6MhYrKPwdT4oITzZcOXJl6AEoIvrWHQWLY7K3WaEfRbT+DODnXks0ToFKls7wyWfi/AHI0ejeDD5Na5/XhY0jdVYOVvovoY2n8LBaqRTFJDYKoCbJ1S+6myUvvmFVwiZWcgOv9gVX1aaIl4wh+XuzUtPDJTcJtUOE8Q2MWl0bdYVtEkHVRznPXN5u3odrDaeTD3vo+pEaEpshLoSKhCyyWvslSzN7T98ez3aw3KFXoFhXPEg5MEJWy7u359MaVwJIsOGUDAFhy/Y7h83LjQYnu8cmX2wuVrQIRIlGVB0f10GYZzPffZz98I/T0xv75NzpyRs31/wMxvdXz35c8m/yTup4kAkG/1s=
-  file_glob: true
-  file:
-    - dist/*
-  skip_cleanup: true
-  on:
-    condition:
-      - "$TRAVIS_OS_NAME == linux"
-      - "$CC == gcc"
-    tags: true
-    repo: jarun/nnn
+  make skip;
